@@ -23,7 +23,7 @@
    (list
     (completing-read (format "Remote host (default %s): " ssh/default-host)
 		     (append ssh/frequent-hosts (ssh/known-hosts))
-		     nil nil "" 'ssh/host-history)))
+		     nil nil (format "%s@" init-file-user) 'ssh/host-history)))
   (if (string= remote "")
       (setq remote ssh/default-host))
   (let ((name (generate-new-buffer-name (format "*%s*" remote)))
@@ -78,3 +78,5 @@ Some machines (HP iLO) need this, because reasons."
     (start-file-process "mmb" (current-buffer) "~/work/bin/mmb" ircname)
     (local-set-key (kbd "C-c C-c") 'mmb-proceed)))
 
+
+(provide 'neale-ssh)
