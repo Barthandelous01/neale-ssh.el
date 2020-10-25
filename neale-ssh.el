@@ -17,13 +17,19 @@
 	(forward-line))
       ssh-hosts-list)))
 
+(defun ssh/default-name ()
+  "Return the default name if ssh/user-name isn't bound"
+  (if (not (boundp 'ssh/user-name))
+      user-login-name
+    ssh/user-name))
+
 (setq ssh/host-history '())
 (defun ssh (remote)
   (interactive
    (list
     (completing-read (format "Remote host (default %s): " ssh/default-host)
 		     (append ssh/frequent-hosts (ssh/known-hosts))
-		     nil nil (format "%s@" init-file-user) 'ssh/host-history)))
+		     nil nil (format "%s@" (ssh/default-name)) 'ssh/host-history)))
   (if (string= remote "")
       (setq remote ssh/default-host))
   (let ((name (generate-new-buffer-name (format "*%s*" remote)))
@@ -54,7 +60,7 @@
 (defun ssh/comint-cr-send (proc string)
   "Send a comint string terminated with carriage return
 
-Some machines (HP iLO) need this, because reasons."
+   Some machines (HP iLO) need this, because reasons."
   (let ((send-string
          (if comint-input-sender-no-newline
              string
